@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug (CMake app)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/app",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "stopAtEntry": false,
+      "externalConsole": false,
+      "MIMode": "lldb",
+      "preLaunchTask": "CMake: build"
+    }
+  ]
+}
