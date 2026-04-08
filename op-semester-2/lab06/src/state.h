@@ -20,11 +20,12 @@ int countRecords(const char*);
 void readFile(const char*, State [], int);
 void inputStates(State [], int n);
 void addRecordsToFile(const char*, const State [], int);
-void removeRecordsFromFile(const char*, const State [], int, const char (*)[30], int);
+int removeRecordsFromFile(const char*, const State [], int, const char (*)[30], int);
 void printRecord(const State&);
 void printAllRecords(const State[], int);
 void showCountriesWithMoreThanOneLanguage(const State[], int);
 void showCountriesWithUsdRateBelow(const State[], int, double);
+int compareIgnoreCase(const char [], const char []);
 void sortCountries(State[], int);
 
 #endif // STATE_H_INCLUDED

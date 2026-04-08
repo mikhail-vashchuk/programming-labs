@@ -129,8 +129,14 @@ int main() {
                     readLine(namesToDelete[i], 30);
                 }
 
-                removeRecordsFromFile(fileName, states, n, namesToDelete, m);
-                std::cout << "Records were processed successfully.\n";
+                int removed = removeRecordsFromFile(fileName, states, n, namesToDelete, m);
+                
+                if (removed == 0) {
+                    std::cout << "No matching records were found.\n";
+                } 
+                else {
+                    std::cout << "Removed " << removed << " record(s).\n";
+                }
 
                 delete[] states;
                 states = nullptr;

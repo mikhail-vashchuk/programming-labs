@@ -6,7 +6,7 @@
 #include <fstream>
 #include <limits>
 #include <algorithm>
-#include <strings.h>
+#include <cctype>
 
 void clearInputLine() {
     std::cin.clear();
@@ -20,7 +20,7 @@ int readInt() {
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             return x;
         }
-        std::cout << "Error: enter a digit.\n";
+        std::cout << "Error: enter a valid integer.\n";
         clearInputLine();
     }
 }
@@ -32,7 +32,7 @@ double readDouble() {
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             return x;
         }
-        std::cout << "Error: enter a digit.\n";
+        std::cout << "Error: enter a valid number.\n";
         clearInputLine();
     }
 }
@@ -95,8 +95,14 @@ void inputStates(State states[], int n) {
         std::cout << "\nCountry name: ";
         readLine(states[i].name, 30);
 
-        std::cout << "Official language count: ";
-        states[i].languageCount = readInt();
+        do {
+            std::cout << "Official language count: ";
+            states[i].languageCount = readInt();
+            
+            if (states[i].languageCount <= 0) {
+                std::cout << "Value must be greater than 0.\n";
+            }
+        } while (states[i].languageCount <= 0);
 
         std::cout << "Language: ";
         readLine(states[i].language, 30);
@@ -104,8 +110,14 @@ void inputStates(State states[], int n) {
         std::cout << "Currency: ";
         readLine(states[i].currency, 20);
 
-        std::cout << "USD rate: ";
-        states[i].usdRate = readDouble();
+        do {
+            std::cout << "USD rate: ";
+            states[i].usdRate = readDouble();
+
+            if (states[i].usdRate <= 0) {
+                std::cout << "Value must be greater than 0.\n";
+            }
+        } while (states[i].usdRate <= 0); 
     }
 }
 
@@ -119,14 +131,16 @@ void addRecordsToFile(const char* fileName, const State states[], int n) {
     file.close();
 }
 
-void removeRecordsFromFile(const char* fileName, const State states[], int n, const char (*namesToDelete)[30], int m) {
+int removeRecordsFromFile(const char* fileName, const State states[], int n, const char (*namesToDelete)[30], int m) {
     std::ofstream file(fileName, std::ios::binary);
 
+    int removed = 0;
     for (int i = 0; i < n; i++) {
         bool shouldDelete = false;
         for (int j = 0; j < m; j++) {
             if (std::strcmp (states[i].name, namesToDelete[j]) == 0) {
                 shouldDelete = true;
+                removed++;
                 break;
             }
         }
@@ -137,8 +151,9 @@ void removeRecordsFromFile(const char* fileName, const State states[], int n, co
             file.write((char*)&states[i], sizeof(states[i]));
         }
     }
-    
      file.close();
+
+     return removed;
 }
 
 void printRecord(const State& state) {
@@ -185,8 +200,38 @@ void showCountriesWithUsdRateBelow(const State states[], int n, double userRate)
     }
 }
 
+int compareIgnoreCase(const char a[], const char b[]) {
+    int i = 0;
+
+    while (a[i] != '\0' && b[i] != '\0') {
+        char ca = std::tolower(static_cast<unsigned char>(a[i]));
+        char cb = std::tolower(static_cast<unsigned char>(b[i]));
+
+        if (ca < cb) {
+            return -1;
+        }
+        if (ca > cb) {
+            return 1;
+        }
+
+        i++;
+    }
+
+    char ca = std::tolower(static_cast<unsigned char>(a[i]));
+    char cb = std::tolower(static_cast<unsigned char>(b[i]));
+
+    if (ca < cb) {
+        return -1;
+    }
+    if (ca > cb) {
+        return 1;
+    }
+
+    return 0;
+}
+
 void sortCountries(State states[], int n) {
     std::sort(states, states + n, [](const State& a, const State& b) {
-        return strcasecmp(a.name, b.name) < 0;
+        return compareIgnoreCase(a.name, b.name) < 0;
     });
 }
